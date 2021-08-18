@@ -23,7 +23,7 @@ public class HttpClientUtil {
     /**
      * get请求
      *
-     * @param url
+     * @param url 第三方接口URL
      * @return
      * @throws Exception
      */
@@ -36,7 +36,7 @@ public class HttpClientUtil {
             HttpGet get = new HttpGet(url);
             get.setHeader("Accept", "application/json;charset=utf-8");
             get.setHeader(new BasicHeader("Content-type", "application/json;charset=utf-8"));
-            // 超时time
+            // 参数设置
             RequestConfig config = RequestConfig.custom().setConnectTimeout(12500).setConnectionRequestTimeout(12000)
                     .setSocketTimeout(12500).build();
             get.setConfig(config);
@@ -56,7 +56,15 @@ public class HttpClientUtil {
         return stringbuffer;
     }
 
-    public static StringBuilder post(String url, String data) throws IOException {
+    /**
+     * post 请求
+     *
+     * @param url 第三方接口URL
+     * @param data 参数
+     * @return
+     * @throws IOException
+     */
+    public static StringBuilder post(String url, String entity) throws IOException {
         StringBuilder stringbuffer = null;
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse httpResponse = null;
@@ -65,7 +73,7 @@ public class HttpClientUtil {
             HttpPost post = new HttpPost(url);
             post.setHeader("Accept", "application/json;charset=utf-8");
             post.setHeader(new BasicHeader("Content-type", "application/json;charset=utf-8"));
-            // 超时时间
+            // 参数设置
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(7500)
                     .setConnectionRequestTimeout(7000).setSocketTimeout(8500).build();
             post.setConfig(requestConfig);
@@ -73,7 +81,6 @@ public class HttpClientUtil {
 
             httpResponse = httpClient.execute(post);
             stringbuffer = getResult(httpResponse.getEntity());
-
         } catch (Exception e) {
             logger.info("" + e);
         } finally {
@@ -91,8 +98,9 @@ public class HttpClientUtil {
             BufferedReader brReader = new BufferedReader(new InputStreamReader(entity.getContent(), "UTF-8"));
             stringBuffer = new StringBuilder();
             String line = "";
-            while ((line = brReader.readLine()) != null)
+            while ((line = brReader.readLine()) != null) {
                 stringBuffer.append(line);
+            }
         }
         return stringBuffer;
     }
